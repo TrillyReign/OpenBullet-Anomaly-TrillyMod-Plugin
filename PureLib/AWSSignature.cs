@@ -110,7 +110,7 @@ namespace Anomaly
             // Magick Stuff goin on
             try
             {
-                var result = Encoding.UTF8.GetString(getSignatureKey(AccessKey, AWSDateStamp, RegionName, AWSService));
+                var result = BitConverter.ToString(getSignatureKey(AccessKey, AWSDateStamp, RegionName.ToLower(), AWSService.ToLower())).Replace("-", "").ToLower();
                 InsertVariable(data, IsCapture, result, VariableName, "", "", false, false);
                 data.Status = RuriLib.BotStatus.SUCCESS;
                 data.Log($"Generated AWS Token with result {result}");
