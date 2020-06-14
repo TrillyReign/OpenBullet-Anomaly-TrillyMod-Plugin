@@ -1,11 +1,8 @@
-﻿using DotNetApiGatewayIam;
-using PluginFramework;
+﻿using PluginFramework;
 using PluginFramework.Attributes;
 using RuriLib;
 using RuriLib.LS;
 using System;
-using System.Net.Http;
-using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -45,11 +42,11 @@ namespace Anomaly
             var input = line.Trim();
             if (input.StartsWith("#")) // If the input actually has a label
                 Label = LineParser.ParseLabel(ref input); // Parse the label and remove it from the original string
-                VariableName = LineParser.ParseLiteral(ref input, "Variable Name");
-                AccessKey = LineParser.ParseLiteral(ref input, "AcessKey");              
-                RegionName = LineParser.ParseLiteral(ref input, "AWS Region Name");
-                AWSService = LineParser.ParseLiteral(ref input, "AWS API Stages");
-                AWSDateStamp = LineParser.ParseLiteral(ref input, "AWS Session token");
+            VariableName = LineParser.ParseLiteral(ref input, "Variable Name");
+            AccessKey = LineParser.ParseLiteral(ref input, "AcessKey");
+            RegionName = LineParser.ParseLiteral(ref input, "AWS Region Name");
+            AWSService = LineParser.ParseLiteral(ref input, "AWS API Stages");
+            AWSDateStamp = LineParser.ParseLiteral(ref input, "AWS Session token");
             if (LineParser.ParseToken(ref input, TokenType.Arrow, false) == "")
                 return this;
             try
@@ -84,7 +81,7 @@ namespace Anomaly
             return writer.ToString();
         }
 
-        static byte[] HmacSHA256(String data, byte[] key)
+        private static byte[] HmacSHA256(String data, byte[] key)
         {
             String algorithm = "HmacSHA256";
             KeyedHashAlgorithm kha = KeyedHashAlgorithm.Create(algorithm);
@@ -93,7 +90,7 @@ namespace Anomaly
             return kha.ComputeHash(Encoding.UTF8.GetBytes(data));
         }
 
-        static byte[] getSignatureKey(String key, String dateStamp, String regionName, String serviceName)
+        private static byte[] getSignatureKey(String key, String dateStamp, String regionName, String serviceName)
         {
             byte[] kSecret = Encoding.UTF8.GetBytes(("AWS4" + key).ToCharArray());
             byte[] kDate = HmacSHA256(dateStamp, kSecret);

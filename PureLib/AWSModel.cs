@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace Anomaly
 {
-    class AWSModel
+    internal class AWSModel
     {
-        static byte[] HmacSHA256(String data, byte[] key)
+        private static byte[] HmacSHA256(String data, byte[] key)
         {
             String algorithm = "HmacSHA256";
             KeyedHashAlgorithm kha = KeyedHashAlgorithm.Create(algorithm);
@@ -16,7 +15,7 @@ namespace Anomaly
             return kha.ComputeHash(Encoding.UTF8.GetBytes(data));
         }
 
-        static byte[] getSignatureKey(String key, String dateStamp, String regionName, String serviceName)
+        private static byte[] getSignatureKey(String key, String dateStamp, String regionName, String serviceName)
         {
             byte[] kSecret = Encoding.UTF8.GetBytes(("AWS4" + key).ToCharArray());
             byte[] kDate = HmacSHA256(dateStamp, kSecret);

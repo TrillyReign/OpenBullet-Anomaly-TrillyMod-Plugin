@@ -3,7 +3,6 @@ using PluginFramework.Attributes;
 using RuriLib;
 using RuriLib.LS;
 using System;
-using System.Diagnostics;
 
 namespace Anomaly
 {
