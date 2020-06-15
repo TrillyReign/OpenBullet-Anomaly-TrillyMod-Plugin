@@ -3,6 +3,7 @@ using PluginFramework.Attributes;
 using RuriLib;
 using RuriLib.LS;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 
 namespace Anomaly
@@ -19,7 +20,7 @@ namespace Anomaly
         [Text("Variable Name", "The output variable name")]
         public string VariableName { get; set; } = "";
 
-        [Dropdown("HTTPMethod", "HTTP Method", options = new string[] { "GET", "POST" , "GIT" , "PATCH" , "HEAD" , "PUT"})]
+        [Dropdown("HTTPMethod", "HTTP Method", options = new string[] { "GET", "POST", "GIT", "PATCH", "HEAD", "PUT" })]
         public string awshttpmethod { get; set; } = "GET";
 
         [Text("AwsHost", "AWS Host Value")]
@@ -51,7 +52,6 @@ namespace Anomaly
 
         [Checkbox("Is Capture", "Should the output variable be marked as capture?")]
         public bool IsCapture { get; set; } = false;
-
 
         public AWSApi()
         {
@@ -114,59 +114,53 @@ namespace Anomaly
         }
 
         private static readonly HttpClient client = new HttpClient();
+
         public override async void Process(BotData data)
         {
-            try
-            {
-                var result = "";
-                using (var requestMessage = new HttpRequestMessage(HttpMethod.Get, "http://127.0.0.1:8080/AwsSign"))
-                    try
-                    {   //Swaps with input data
-                        var AwsHostHeader = (ReplaceValues(awshost, data));
-                        var AwsPathHeader = (ReplaceValues(awspath, data));
-                        var AwsRegionHeader = (ReplaceValues(awsregion, data));
-                        var AwsCredentialHeader = (ReplaceValues(awscredential, data));
-                        var AwsKeyHeader = (ReplaceValues(awskey, data));
-                        var AwsSecretKeyHeader = (ReplaceValues(awssecretkey, data));
-                        var AwsSession = (ReplaceValues(awssession, data));
-                        var AwsHttpMethod = (ReplaceValues(awshttpmethod, data));
-                        var AwsBodyData = (ReplaceValues(awsbodydata, data));
-                        var AwsCustomHeader = (ReplaceValues(awscustomheader, data));
-                        //Sets headers for request
-                        requestMessage.Headers.Add("awshost", AwsHostHeader); 
-                        requestMessage.Headers.Add("awspath", AwsPathHeader);
-                        requestMessage.Headers.Add("awsregion", AwsRegionHeader);
-                        requestMessage.Headers.Add("awscredential", AwsCredentialHeader);
-                        requestMessage.Headers.Add("awskey", AwsKeyHeader);
-                        requestMessage.Headers.Add("awssecretkey", AwsSecretKeyHeader);
-                        requestMessage.Headers.Add("awssession", AwsSession);
-                        requestMessage.Headers.Add("awshttpmethod", AwsHttpMethod);
-                        requestMessage.Headers.Add("awsbody", AwsBodyData);
-                        requestMessage.Headers.Add("awsheaders", AwsCustomHeader);
-                        var Response = await client.SendAsync(requestMessage);
-                        result = await Response.Content.ReadAsStringAsync();
-                        if (result.Length > 0)
-                        {
-                            InsertVariable(data, IsCapture, result, VariableName, "", "", false, false);
-                            data.Log($"Generated Signature.");
-                        }
-                        else if (result == "")
-                        {
-                            data.Status = BotStatus.ERROR;
-                            data.Log($"Error contacting API");
-                        }
+            var result = "";
+            using (var requestMessage = new HttpRequestMessage(HttpMethod.Get, "http://127.0.0.1:8080/AwsSign"))
+                try
+                {   //Swaps with input data
+                    var AwsHostHeader = (ReplaceValues(awshost, data));
+                    var AwsPathHeader = (ReplaceValues(awspath, data));
+                    var AwsRegionHeader = (ReplaceValues(awsregion, data));
+                    var AwsCredentialHeader = (ReplaceValues(awscredential, data));
+                    var AwsKeyHeader = (ReplaceValues(awskey, data));
+                    var AwsSecretKeyHeader = (ReplaceValues(awssecretkey, data));
+                    var AwsSession = (ReplaceValues(awssession, data));
+                    var AwsHttpMethod = (ReplaceValues(awshttpmethod, data));
+                    var AwsBodyData = (ReplaceValues(awsbodydata, data));
+                    var AwsCustomHeader = (ReplaceValues(awscustomheader, data));
+                    //Sets headers for request
+                    requestMessage.Headers.Add("awshost", AwsHostHeader);
+                    requestMessage.Headers.Add("awspath", AwsPathHeader);
+                    requestMessage.Headers.Add("awsregion", AwsRegionHeader);
+                    requestMessage.Headers.Add("awscredential", AwsCredentialHeader);
+                    requestMessage.Headers.Add("awskey", AwsKeyHeader);
+                    requestMessage.Headers.Add("awssecretkey", AwsSecretKeyHeader);
+                    requestMessage.Headers.Add("awssession", AwsSession);
+                    requestMessage.Headers.Add("awshttpmethod", AwsHttpMethod);
+                    requestMessage.Headers.Add("awsbody", AwsBodyData);
+                    requestMessage.Headers.Add("awsheaders",AwsCustomHeader);
+                    var Response = await client.SendAsync(requestMessage);
+
+                    result = await Response.Content.ReadAsStringAsync();
+                    if (Response.StatusCode.ToString() == "OK")
+                    {
+                        InsertVariable(data, IsCapture, result, VariableName, "", "", false, false);
+                        data.Log($"Generated Signature.");
                     }
-                    catch (Exception ex)
+                    else if (Response.StatusCode.ToString() != "200")
                     {
                         data.Status = BotStatus.ERROR;
-                        data.Log($"Error contacting API {ex}");
+                        data.Log($"Error contacting API. Response Code:{Response.StatusCode}");
                     }
-            }
-            catch (Exception ex)
-            {
-                data.Status = BotStatus.ERROR;
-                data.Log($"Error contacting API {ex}");
-            }
+                }
+                catch (Exception ex)
+                {
+                    data.Status = BotStatus.ERROR;
+                    data.Log($"Error Running AWSAPI Block{ex}");
+                }
         }
     }
 }
