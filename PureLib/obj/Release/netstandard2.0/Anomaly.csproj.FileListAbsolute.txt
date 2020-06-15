@@ -32,3 +32,4 @@ C:\Users\codys\source\repos\OpenBullet-Anomaly-Plugin\PureLib\obj\Release\netsta
 C:\Users\codys\source\repos\OpenBullet-Anomaly-Plugin\PureLib\obj\Release\netstandard2.0\Anomaly.csproj.CopyComplete
 C:\Users\codys\source\repos\OpenBullet-Anomaly-Plugin\PureLib\obj\Release\netstandard2.0\Anomaly.dll
 C:\Users\codys\source\repos\OpenBullet-Anomaly-Plugin\PureLib\obj\Release\netstandard2.0\Anomaly.pdb
+C:\Users\codys\Source\Repos\OpenBullet-Anomaly-Plugin\PureLib\obj\Release\netstandard2.0\Anomaly.csprojAssemblyReference.cache

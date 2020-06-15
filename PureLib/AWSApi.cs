@@ -5,6 +5,7 @@ using RuriLib.LS;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace Anomaly
 {
@@ -115,10 +116,9 @@ namespace Anomaly
 
         private static readonly HttpClient client = new HttpClient();
 
-        public override async void Process(BotData data)
+        public override void Process(BotData data)
         {
-            var result = "";
-            using (var requestMessage = new HttpRequestMessage(HttpMethod.Get, "http://127.0.0.1:8080/AwsSign"))
+            using (var client = new HttpClient())
                 try
                 {   //Swaps with input data
                     var AwsHostHeader = (ReplaceValues(awshost, data));
@@ -132,28 +132,29 @@ namespace Anomaly
                     var AwsBodyData = (ReplaceValues(awsbodydata, data));
                     var AwsCustomHeader = (ReplaceValues(awscustomheader, data));
                     //Sets headers for request
-                    requestMessage.Headers.Add("awshost", AwsHostHeader);
-                    requestMessage.Headers.Add("awspath", AwsPathHeader);
-                    requestMessage.Headers.Add("awsregion", AwsRegionHeader);
-                    requestMessage.Headers.Add("awscredential", AwsCredentialHeader);
-                    requestMessage.Headers.Add("awskey", AwsKeyHeader);
-                    requestMessage.Headers.Add("awssecretkey", AwsSecretKeyHeader);
-                    requestMessage.Headers.Add("awssession", AwsSession);
-                    requestMessage.Headers.Add("awshttpmethod", AwsHttpMethod);
-                    requestMessage.Headers.Add("awsbody", AwsBodyData);
-                    requestMessage.Headers.Add("awsheaders",AwsCustomHeader);
-                    var Response = await client.SendAsync(requestMessage);
+                    client.DefaultRequestHeaders.Add("awspath", AwsPathHeader);
+                    client.DefaultRequestHeaders.Add("awsregion", AwsRegionHeader);
+                    client.DefaultRequestHeaders.Add("awscredential", AwsRegionHeader);
+                    client.DefaultRequestHeaders.Add("awssecretkey", AwsSecretKeyHeader);
+                    client.DefaultRequestHeaders.Add("awssession", AwsSession);
+                    client.DefaultRequestHeaders.Add("awshttpmethod", AwsHttpMethod);
+                    client.DefaultRequestHeaders.Add("awsbody", AwsBodyData);
+                    client.DefaultRequestHeaders.Add("awsheaders", AwsCustomHeader);
+                    client.DefaultRequestHeaders.Add("awshost", AwsHostHeader);
+                    client.DefaultRequestHeaders.Add("awskey", AwsKeyHeader);
 
-                    result = await Response.Content.ReadAsStringAsync();
-                    if (Response.StatusCode.ToString() == "OK")
+                    var response = client.GetAsync("http://127.0.0.1:8080/AwsSign").Result;
+                    if (response.IsSuccessStatusCode)
                     {
+                        var responseContent = response.Content;
+                        var result = responseContent.ReadAsStringAsync().Result;
                         InsertVariable(data, IsCapture, result, VariableName, "", "", false, false);
-                        data.Log($"Generated Signature.");
+                        data.Log($"Successfully contacted API");
                     }
-                    else if (Response.StatusCode.ToString() != "200")
+                    else
                     {
-                        data.Status = BotStatus.ERROR;
-                        data.Log($"Error contacting API. Response Code:{Response.StatusCode}");
+                        data.Status = RuriLib.BotStatus.ERROR;
+                        data.Log($"Error Contacting AWSApi");
                     }
                 }
                 catch (Exception ex)

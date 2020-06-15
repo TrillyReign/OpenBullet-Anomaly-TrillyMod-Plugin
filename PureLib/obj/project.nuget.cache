@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "spcLZ6p9O86HUIplRxHG7ZOIULXbJtF765QgtM8Vl6N7AOtvVROsRNLHzQv8ryTiuwaD5lHPOVr0J5W/j0KbGA==",
+  "dgSpecHash": "PchLUK8ZbsDjAU4uASQgG2mCnWREHuXznryxhBbHnNLxJ/vWzuX32qhRY8ZAgu+LgbuSYN0JmpciInJ5QT5/Bw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\codys\\source\\repos\\OpenBullet-Anomaly-Plugin\\PureLib\\Anomaly.csproj",
+  "projectFilePath": "C:\\Users\\codys\\Source\\Repos\\OpenBullet-Anomaly-Plugin\\PureLib\\Anomaly.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\codys\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "C:\\Users\\codys\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
