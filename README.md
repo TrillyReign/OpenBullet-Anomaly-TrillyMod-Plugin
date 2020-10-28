@@ -6,7 +6,7 @@
 
 
 
-**OpenBullet Anomaly Plugin**
+**OpenBullet Anomaly TrillyMod Plugin**
 
 A Plugin version of OpenBullet Anomaly Hopefully containing all of the standalone features.. And More!
 
@@ -14,19 +14,14 @@ Installation: Download The release you want and place the Anomaly.dll and the An
 
 To Compile it yourself: Download Repo and Open in Visual Studio. All Dependancy files are held Locally. Compile with VS The Run PostBuild.bat file to properly configure the folders.
 
-To Do List.
-1) Finish Porting Functions
-2) Finish Changelog
-3) Port OCR
-4) Add Additional Features
+Updates:
 
-In Progress
-1) Porting Functions
+- Fixed Mega "Color Red Block" Error
 
-Completed
-1) OAuth Generation Blocks
-2) Base of Updater
-3) Updater
+- Added More Compatibility With Other Plugins
 
-Do you want to add to this project? Just submit a Pull-Request for review.
-Want a Feature Added? Just open an Issue with the enhancement label.
+- Fixed Some Crashes
+
+Thank you to https://github.com/PurityWasHere & https://github.com/INFINITEY6622 for developing the original source code!
+
+Will release futher updates when I have extra time!
